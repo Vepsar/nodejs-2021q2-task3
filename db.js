@@ -19,8 +19,9 @@ sequelize.authenticate().then(
   }
 );
 
-function sync() {
-  console.log("sync");
+async function sync() {
+  await sequelize.sync({ force: false });
+  console.log("Models has succsesfuly updated");
 }
 
 module.exports = {
