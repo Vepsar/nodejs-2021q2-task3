@@ -20,9 +20,7 @@ router.get("/all", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  console.log(req.params);
   Game.findOne({ where: { id: req.params.id, owner_id: req.user.id } }).then(
-    //fix: add check
     function findSuccess(game) {
       if (game !== null) {
         res.status(200).json({
@@ -77,7 +75,7 @@ router.put("/update/:id", (req, res) => {
     {
       where: {
         id: req.params.id,
-        owner_id: req.user.id, //fix
+        owner_id: req.user.id,
       },
     }
   ).then(
