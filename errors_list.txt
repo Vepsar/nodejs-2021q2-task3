@@ -1,0 +1,78 @@
+Ошибки компиляции
+1. ReferenceError: Router is not defined
+Исправлено: добавлено require("express"). 
+const router = require("express").Router();
+путь файла: \controllers\usercontroller.js строка: 1
+
+2. Error: Cannot find module 'bcrypt'
+Исправлено: изменено название 'bcrypt' на 'bcryptjs'
+путь файла: \controllers\usercontroller.js строка: 2
+
+3. TypeError: require(...).import is not a function
+Ошибка работы с Sequlize
+Исправлено: изменен вызов User и запрос к файлу db.js
+const db = require("../db");
+const User = db.user;
+путь файла:  \controllers\usercontroller.js строки: 5,6
+изменен вызов Game и запрос к файлу db.js
+const db = require("../db");
+const Game = db.game;
+путь файла:  \controllers\gamecontroller.js строки: 2,3
+измене вызов User и запрос к файлу db.js
+const db = require("../db");
+const User = db.user;
+путь файла: \middleware\validate-session.js строки 2,3
+Соответственно изменен файл db.js для передачи необходимых данных. Добавлено определение User и Game:
+const User = require("./models/user")(sequelize, Sequelize);
+const Game = require("./models/game")(sequelize, Sequelize);
+Кроме того добавлен модуль экспорта:
+module.exports = {
+    sequelize: sequelize,
+    user: User,
+    game: Game,
+  };
+Путь файла: /db.js строки: 9,10,27-32
+
+4. SyntaxError: Function statements require a function name
+Исправлено: добавлен модуль экспорта
+module.exports = function (sequelize, DataTypes) {…
+путь файла: \models\game.js строка: 1
+
+5. ReferenceError: routers is not defined
+Исправлено: исправлено название экспорта
+module.exports = router;
+путь файла:  \controllers\gamecontroller.js строка: 132
+
+6. ReferenceError: db.sync() is not defined:
+Исправлено: добавлена функция sync() в файл /db.js
+Путь файла: /db.js строки: 22-25
+
+Ошибки логики
+1. Error: connect ECONNREFUSED 127.0.0.1:4000
+Добавлен порт в sequelize:
+const port = 4000;
+app.listen(port, () => {
+  console.log("App is listening on 4000");
+});
+Путь файла: /app.js строки: 7,20-22
+2. TypeError: Cannot read property 'user' of undefined
+Настроена правильная работа модуля body-parser
+const bodyParser = require("body-parser");
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(bodyParser.json());
+Путь файла: /app.js строки: 6, 11-16
+3. Добавлена реализация функции db.sync() в файл /db.js строка: 23
+4. notNull Violation: user.passwordHash cannot be null
+Исправлена ошибка в названии переменной: passwordHash
+путь файла: \controllers\usercontroller.js строка: 12
+5. Исправлены ошибка в названиях переменных в методах /create и /update, приводивших к ошибкам
+путь файла: \controllers\gamecontroller.js строки: 9, 46-51, 69-73
+
+
+Рефакторинг кода:
+1. Замена переменных var на const по необходимости.
+2. Добавлены доп. проверки логики для некоторых методов в \controllers\gamecontroller.js (проверка и ответы для ошибочных удалений и запросов)
